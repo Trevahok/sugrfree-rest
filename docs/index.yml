@@ -1,0 +1,1036 @@
+openapi: 3.0.2
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/Trevahok/SugrFree/1.0.0
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/Trevahok/SugrFree/1.0.0/
+info:
+  title: SugrFree
+  description: AI-based Diet Management System for Diabetes patients
+  version: "1.0.0"
+  contact:
+    name: Vignesh S.
+    url: www.github.com/trevahok
+    email: vighneshss@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: menus
+    description: Endpoints for menucard containting list of Foods
+  - name: foods
+    description: Food related endpoint
+  - name: recipes
+    description: Recipes related endpoints
+  - name: recipeSteps
+    description: Steps of a recipe related endpoints
+  - name: ingredients
+    description: Ingredients related endpoints
+  - name: nutrients
+    description: Nutrition related endpoints
+  - name: users
+    description: User related endpoints
+paths:
+  /food:
+    get:
+      tags:
+        - foods
+      summary: Query and list foods
+      description: |
+        By passing in the appropriate options, you can search for
+        available food in the system
+      operationId: listFoodView
+      parameters:
+        - $ref : '#/components/parameters/searchParam'
+        - $ref : '#/components/parameters/searchStringParam'
+        - $ref : '#/components/parameters/limitParam'
+        - $ref : '#/components/parameters/skipParam'
+       
+      responses:
+        200:
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Food'
+        400:
+          $ref: '#/components/responses/400Response'
+        203: 
+          $ref: '#/components/responses/203Response'
+    post:
+      tags:
+        - foods
+      summary: Add Food
+      operationId: createFoodView
+      description: Adds a food to the system
+      responses:
+        201:
+          description: Food created
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Food'
+        400:
+          $ref: '#/components/responses/400Response'
+        409:
+          $ref: '#/components/responses/409Response'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Food'
+        description: Food Item to add
+  /food/{id}:
+    get:
+      tags:
+      - foods
+      summary: Find food by ID
+      description: Returns a single food
+      operationId: detailFoodView
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Food"
+        400:
+          $ref: '#/components/responses/400Response'
+        404:
+          $ref : '#/components/responses/404Response'
+
+    put:
+      tags:
+        - foods
+      summary: "Updates a food in the store with form data"
+      description: Updates a food with the given id and form data
+      operationId: "updateFoodView"
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Food'
+      responses:
+        200:
+          description: "successfully updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Food"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+    delete:
+      tags:
+        - foods
+      summary: Deletes a food
+      description: Delete a food from the database 
+      operationId: deleteFoodView
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+      responses:
+        200:
+          description: successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Food"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+  /food/{id}/recipe:
+    get:
+      tags:
+        - recipes
+      summary: Query and list recipes
+      description: |
+        By passing in the appropriate options, you can search for
+        available recipes in the system, empty query returns all the recipes available for the given food.
+      operationId: listFoodRecipeView
+      parameters:
+        - $ref : '#/components/parameters/foodIdParam'
+        - $ref : '#/components/parameters/searchParam'
+        - $ref : '#/components/parameters/searchStringParam'
+        - $ref : '#/components/parameters/limitParam'
+        - $ref : '#/components/parameters/skipParam'
+       
+      responses:
+        200:
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        400:
+          $ref: '#/components/responses/400Response'
+        203: 
+          $ref: '#/components/responses/203Response'
+    post:
+      tags:
+        - recipes
+      summary: Add a new Recipes to the given food
+      operationId: createFoodRecipeView
+      description: Adds a recipe to the system
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+      responses:
+        201:
+          description: Recipe added successfully
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Recipe'
+        400:
+          $ref: '#/components/responses/400Response'
+        409:
+          $ref: '#/components/responses/409Response'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+        description: Recipe Item to add
+  /food/{id}/recipe/{recipeId}:
+    get:
+      tags:
+      - recipes
+      summary: Find recipes by ID from a particular Food
+      description: Returns a single selected recipe
+      operationId: detailFoodRecipeView
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+        - $ref: '#/components/parameters/recipeIdParam'
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        400:
+          $ref: '#/components/responses/400Response'
+        404:
+          $ref : '#/components/responses/404Response'
+    put:
+      tags:
+        - recipes
+      summary: Updates a recipe in the store with form data
+      description: Updates a recipe from a particular food 
+      operationId: updateFoodRecipeView
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+        - $ref: '#/components/parameters/recipeIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+      responses:
+        200:
+          description: successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+    delete:
+      tags:
+        - recipes
+      summary: Deletes a Recipe
+      description: Delete a Recipe from the Food object 
+      operationId: deleteFoodRecipeView
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+        - $ref: '#/components/parameters/recipeIdParam'
+      responses:
+        200:
+          description: successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+  /food/{id}/recipe/{recipeId}/step:
+    get:
+      tags:
+        - recipeSteps
+      summary: Query and list recipe's steps
+      description: |
+        By passing in the appropriate options, you can search for
+        available recipes in the system, empty query returns all the recipes available for the given food.
+      operationId: listFoodRecipeStepView
+      parameters:
+        - $ref : '#/components/parameters/foodIdParam'
+        - $ref : '#/components/parameters/recipeIdParam'
+        - $ref : '#/components/parameters/searchParam'
+        - $ref : '#/components/parameters/searchStringParam'
+        - $ref : '#/components/parameters/limitParam'
+        - $ref : '#/components/parameters/skipParam'
+       
+      responses:
+        200:
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipeStep'
+        400:
+          $ref: '#/components/responses/400Response'
+        203: 
+          $ref: '#/components/responses/203Response'
+    post:
+      tags:
+        - recipeSteps
+      summary: Add a new Steps to the given recipe
+      operationId: createFoodRecipeStepView
+      description: Adds a step to the recipe
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+        - $ref: '#/components/parameters/recipeIdParam'
+      responses:
+        201:
+          description: Step added successfully
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/RecipeStep'
+        400:
+          $ref: '#/components/responses/400Response'
+        409:
+          $ref: '#/components/responses/409Response'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeStep'
+        description: Recipe Step Item to add
+  /food/{id}/recipe/{recipeId}/step/{stepId}:
+    get:
+      tags:
+      - recipeSteps
+      summary: Find recipe's step by ID from a particular Food
+      description: Returns a single selected recipe
+      operationId: detailFoodRecipeStepView
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+        - $ref: '#/components/parameters/recipeIdParam'
+        - $ref: '#/components/parameters/stepIdParam'
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipeStep"
+        400:
+          $ref: '#/components/responses/400Response'
+        404:
+          $ref : '#/components/responses/404Response'
+
+    put:
+      tags:
+        - recipeSteps
+      summary: Updates a recipe's step in the store with form data
+      description: Updates a recipe's step from a particular food 
+      operationId: updateFoodRecipeStepView
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+        - $ref: '#/components/parameters/recipeIdParam'
+        - $ref: '#/components/parameters/stepIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeStep'
+      responses:
+        200:
+          description: successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipeStep"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+    delete:
+      tags:
+        - recipeSteps
+      summary: Deletes a Recipe
+      description: Delete a Recipe from the Food object 
+      operationId: deleteFoodRecipeStepView
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+        - $ref: '#/components/parameters/recipeIdParam'
+        - $ref: '#/components/parameters/stepIdParam'
+      responses:
+        200:
+          description: successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+  /recipe/:
+    get:
+      tags:
+        - recipes
+      summary: Query and list recipes
+      description: |
+        By passing in the appropriate options, you can search for
+        available recipes in the system, empty query returns all the recipes available for the given food.
+      operationId: listRecipeView
+      parameters:
+        - $ref : '#/components/parameters/searchParam'
+        - $ref : '#/components/parameters/searchStringParam'
+        - $ref : '#/components/parameters/limitParam'
+        - $ref : '#/components/parameters/skipParam'
+       
+      responses:
+        200:
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        400:
+          $ref: '#/components/responses/400Response'
+        203: 
+          $ref: '#/components/responses/203Response'
+    post:
+      tags:
+        - recipes
+      summary: Add a new Recipes to the given food
+      operationId: createRecipeView
+      description: Adds a recipe to the system
+      responses:
+        201:
+          description: Recipe added successfully
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Recipe'
+        400:
+          $ref: '#/components/responses/400Response'
+        409:
+          $ref: '#/components/responses/409Response'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+        description: Recipe Item to add
+  /recipe/{recipeId}:
+    get:
+      tags:
+      - recipes
+      summary: Find recipes by ID from a particular Food
+      description: Returns a single selected recipe
+      operationId: detailRecipeView
+      parameters:
+        - $ref: '#/components/parameters/recipeIdParam'
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        400:
+          $ref: '#/components/responses/400Response'
+        404:
+          $ref : '#/components/responses/404Response'
+    put:
+      tags:
+        - recipes
+      summary: Updates a recipe in the store with form data
+      description: Updates a recipe from a particular food 
+      operationId: updateRecipeView
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/recipeIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+      responses:
+        200:
+          description: successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+    delete:
+      tags:
+        - recipes
+      summary: Deletes a Recipe
+      description: Delete a Recipe from the Food object 
+      operationId: deleteRecipeView
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/recipeIdParam'
+      responses:
+        200:
+          description: successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+  /recipe/{recipeId}/step:
+    get:
+      tags:
+        - recipeSteps
+      summary: Query and list recipe's steps
+      description: |
+        By passing in the appropriate options, you can search for
+        available recipes in the system, empty query returns all the recipes available for the given food.
+      operationId: listRecipeStepView
+      parameters:
+        - $ref : '#/components/parameters/recipeIdParam'
+        - $ref : '#/components/parameters/searchParam'
+        - $ref : '#/components/parameters/searchStringParam'
+        - $ref : '#/components/parameters/limitParam'
+        - $ref : '#/components/parameters/skipParam'
+       
+      responses:
+        200:
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipeStep'
+        400:
+          $ref: '#/components/responses/400Response'
+        203: 
+          $ref: '#/components/responses/203Response'
+    post:
+      tags:
+        - recipeSteps
+      summary: Add a new Steps to the given recipe
+      operationId: createRecipeStepView
+      description: Adds a step to the recipe
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+        - $ref: '#/components/parameters/recipeIdParam'
+      responses:
+        201:
+          description: Step added successfully
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/RecipeStep'
+        400:
+          $ref: '#/components/responses/400Response'
+        409:
+          $ref: '#/components/responses/409Response'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeStep'
+        description: Recipe Step Item to add
+  /recipe/{recipeId}/step/{stepId}:
+    get:
+      tags:
+      - recipeSteps
+      summary: Find recipe's step by ID from a particular Food
+      description: Returns a single selected recipe
+      operationId: detailRecipeStepView
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+        - $ref: '#/components/parameters/recipeIdParam'
+        - $ref: '#/components/parameters/stepIdParam'
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipeStep"
+        400:
+          $ref: '#/components/responses/400Response'
+        404:
+          $ref : '#/components/responses/404Response'
+
+    put:
+      tags:
+        - recipeSteps
+      summary: Updates a recipe's step in the store with form data
+      description: Updates a recipe's step from a particular food 
+      operationId: updateRecipeStepView
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+        - $ref: '#/components/parameters/recipeIdParam'
+        - $ref: '#/components/parameters/stepIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeStep'
+      responses:
+        200:
+          description: successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipeStep"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+    delete:
+      tags:
+        - recipeSteps
+      summary: Deletes a Recipe
+      description: Delete a Recipe from the Food object 
+      operationId: deleteRecipeStepView
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/foodIdParam'
+        - $ref: '#/components/parameters/recipeIdParam'
+        - $ref: '#/components/parameters/stepIdParam'
+      responses:
+        200:
+          description: successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+  /menu:
+    get:
+      tags:
+        - menus
+      summary: Query and list menus
+      description: |
+        By passing in the appropriate options, you can search for
+        available menus in the system
+      operationId: listMenuView
+      parameters:
+        - $ref : '#/components/parameters/searchParam'
+        - $ref : '#/components/parameters/searchStringParam'
+        - $ref : '#/components/parameters/limitParam'
+        - $ref : '#/components/parameters/skipParam'
+       
+      responses:
+        200:
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Menu'
+        400:
+          $ref: '#/components/responses/400Response'
+        203: 
+          $ref: '#/components/responses/203Response'
+    post:
+      tags:
+        - menus
+      summary: Add Menu
+      operationId: createMenuView
+      description: Adds a menu to the system
+      responses:
+        201:
+          description: Menu created
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Menu'
+        400:
+          $ref: '#/components/responses/400Response'
+        409:
+          $ref: '#/components/responses/409Response'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Menu'
+        description: Menu Item to add
+  /menu/{menuId}:
+    get:
+      tags:
+      - menus
+      summary: Find menu by ID
+      description: Returns a single menu
+      operationId: detailMenuView
+      parameters:
+        - $ref: '#/components/parameters/menuIdParam'
+
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Menu"
+        400:
+          $ref: '#/components/responses/400Response'
+        404:
+          $ref : '#/components/responses/404Response'
+
+    put:
+      tags:
+        - menus
+      summary: "Updates a menu in the store with form data"
+      description: Updates a menu with the given id and form data
+      operationId: "updateMenuView"
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/menuIdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Menu'
+      responses:
+        200:
+          description: "successfully updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Menu"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+    delete:
+      tags:
+        - menus
+      summary: Deletes a menu
+      description: Delete a menu from the database 
+      operationId: deleteMenuView
+      security:
+      - api_key: []
+      parameters:
+        - $ref: '#/components/parameters/menuIdParam'
+      responses:
+        200:
+          description: successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Menu"
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        404:
+          $ref : '#/components/responses/404Response'
+
+
+
+components:
+  responses:
+    401Response:
+      description: Unauthorized Access - Access Token is invalid or missing 
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    409Response:
+      description: Object being created already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    203Response: 
+      description: empty list 
+      content:
+        application/json:
+          schema:
+            type: array
+            default: []
+            items:
+              nullable: true
+    400Response:
+      description: "Invalid ID supplied"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    404Response:
+      description: "Requested Resource not found"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  securitySchemes:
+    api_key:
+      type: http
+      scheme : bearer
+      bearerFormat: JWT
+
+  parameters:
+    menuIdParam:
+      name: stepId
+      in: path
+      description: "ID of step of the recipe to return from the given food"
+      required: true
+      schema: 
+        type: string
+    stepIdParam:
+      name: stepId
+      in: path
+      description: "ID of step of the recipe to return from the given food"
+      required: true
+      schema: 
+        type: string
+    recipeIdParam:
+      name: recipeId
+      in: path
+      description: "ID of recipe to return from the given food"
+      required: true
+      schema: 
+        type: string
+    foodIdParam:
+        name: id
+        in: path
+        description: "ID of object to return"
+        required: true
+        schema: 
+          type: string
+    searchParam:
+      in: query 
+      name: searchObject
+      description: pass an optional object to search the Database using it. 
+      schema: 
+        type : object
+
+    searchStringParam:
+      in: query
+      name: searchString
+      description: pass an optional search string for looking up database
+      schema:
+        type: string
+    limitParam: 
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
+        default: 20
+    skipParam:
+      in: query
+      name: skip
+      description: number of records to skip before returning object
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+        
+  schemas:
+    Menu:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: string
+          example: d290f1eed701748f0851
+        name:
+          type: string
+          example: Hotel Saravana Bhavan
+        author:
+          type: string 
+          example : Chief Chef of HSB
+        foods:
+          type: array
+          default : []
+          items:
+            $ref: '#/components/schemas/Food'
+    RecipeStep:
+      type: object 
+      description: Describes each step of a recipe 
+      properties:
+        id:
+          type: integer
+          example: 1
+        ingredients:
+          type: array
+          default: []
+          items:
+            $ref: '#/components/schemas/Ingredient'
+        description:
+          type: string 
+          description: Detailed list of the process done in a particular step of the cooking
+          example: Add onions to the pan
+        quantity: 
+          type: object 
+          description: Detailed list of quantities of each ingredient
+          properties:
+            ingredient:
+              $ref: '#/components/schemas/Ingredient'
+            quantity:
+              type: string
+              example: 5 gms
+
+    Recipe:
+      type: object
+      required:
+        - id
+        - author
+        - steps
+        - totalCookTime
+      description: Describes the recipe of a food 
+      properties:
+        id:
+          type: string
+          format: string
+          example: d290f1eed701748f0851
+        author :
+          type: string 
+          example: Vignesh - Master Chef India
+        totalCookTime:
+          type: string
+          format: time
+          example: 30 mins
+        steps:
+          type: array
+          uniqueItems: true 
+          default : []
+          items:
+            $ref: '#/components/schemas/RecipeStep'
+
+    Error:
+      type: object
+      required:
+        - message
+        - code
+      properties:
+        message: 
+          type: string
+          example: Invalid input/ID supplied 
+        code: 
+          type: integer
+          example: 400
+        data:
+          type: object
+          description: Body of the request is sent back again 
+    Food:
+      type: object
+      required:
+        - name
+        - cuisine
+        - createdDate
+      properties:
+        id:
+          type: string
+          format: string
+          example: d290f1eed701748f0851
+        name:
+          type: string
+          example: Garlic Bread
+        createdDate:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        modifiedDate:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        cuisine:
+          type: string
+          example: Indian
+        recipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipe'
+    Ingredient:
+      type: object
+      required: 
+        - name
+        - id
+      properties:
+        id:
+          type: string
+          format: string
+          example: d290f1eed701748f0851
+        name:
+          type: string
+          example: Chilli
