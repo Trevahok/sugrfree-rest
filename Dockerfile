@@ -10,7 +10,7 @@ COPY . .
 
 EXPOSE 8000
 
-ENV DB_CONNECT = mongodb://127.0.0.1:27017/courses
+ENV DB_CONNECT = mongodb+srv://notffcs:ffcssucksass@notffcs-y0bqz.mongodb.net/educayshun?retryWrites=true&w=majority
 ENV SECRET_KEY = this+is_a+secret|data
 
 CMD [ "npm", "start" ]
