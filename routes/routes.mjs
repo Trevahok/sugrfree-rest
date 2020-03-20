@@ -3,7 +3,7 @@ import { RouterSet } from '../lib/routerset.mjs'
 import { MenuSchema, FoodSchema, IngredientSchema, NutritionSchema, StepSchema, RecipeSchema } from '../models/Food.mjs';
 
 
-const menuRouterSet = new RouterSet('menu', MenuSchema, loginRequiredMiddleware)
+const menuRouterSet = new RouterSet('menu', MenuSchema )
 const foodRouterSet = new RouterSet('food', FoodSchema, loginRequiredMiddleware)
 const ingredientRouterSet = new RouterSet('ingredient', IngredientSchema, loginRequiredMiddleware)
 const nutritionRouterSet = new RouterSet('nutrition', NutritionSchema, loginRequiredMiddleware)

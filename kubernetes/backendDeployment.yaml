@@ -8,17 +8,17 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-            maxSurge: 1
-            maxUnavailable: 1
+      maxSurge: 1
+      maxUnavailable: 1
   template:
-          metadata:
-                  labels:
-                    app: backend-sugrfree
-          spec:
-                  containers:
-                          - image: trevahok/todorest:gunicorn
-                            imagePullPolicy: Always
-                            name: backend-django
-                            ports:
-                                    - containerPort: 8000
+    metadata:
+      labels:
+        app: backend-sugrfree
+    spec:
+      containers:
+        - image: trevahok/sugrfree:v1
+          imagePullPolicy: Always
+          name: backend-sugrfree
+          ports:
+            - containerPort: 8000
 

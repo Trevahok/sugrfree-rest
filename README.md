@@ -110,7 +110,7 @@ deleteController | /:id  | DELETE
 - Query parameters are taken for filtering and projection by Mongoose.
      - `query` is an URL object that is used to filter query results available at List Endpoints.
      - `fields` is an comma-separated string which contains the fields to project.
-- 
+- Create, Update and Delete controllers return the object in consideration after performing the operation. 
  
 
 ### EmbedControllerSet
@@ -118,17 +118,50 @@ deleteController | /:id  | DELETE
 
 If a schema has an embedded document, it will need special CRUD updates to access embedded documents from the URL and no other special methods.  
 
- If Nested Schema Array is nested inside each other, ControllerSet adds EmbedControllerSet recursively so that even the most innermost Schema has CRUD updates.
+     Note : If Nested Schema Array is nested inside each other, ControllerSet adds EmbedControllerSet recursively so that even the most innermost Schema has CRUD updates.
 
 Controllers | URL | Method| Notes
 ---| --- | --- | ---
-listController   | /model/:id/embedName/   |  GET 
-createController | /model/:id/embedName/    | POST
-detailController | /model/:id/embedName/:embedId | GET
-updateController | /model/:id/embedName/:embedId | POST
-deleteController | /model/:id/embedName/:embedId  | DELETE
+embedListController   | /model/:id/embedName/   |  GET 
+embedCreateController | /model/:id/embedName/    | POST
+embedDetailController | /model/:id/embedName/:embedId | GET
+embedUpdateController | /model/:id/embedName/:embedId | POST
+embedDeleteController | /model/:id/embedName/:embedId  | DELETE
 
 *Example:*
+---
+For the following nested models , 
+
+```js
+export const NutritionSchema = Joi.object({
+    name: Joi.string().required(),
+    calorie: Joi.number().required()
+
+})
+export const IngredientSchema = Joi.object({
+    name: Joi.string().max(100).required(),
+    nutrients: Joi.array().items(NutritionSchema)
+})
+
+export const StepSchema = Joi.object({
+ ingredients: Joi.array().items(IngredientSchema),
+ stepNo: Joi.number().required().min(1).max(100),
+ description : Joi.string().max(1000),
+
+})
+
+```
+
+the following endpoints will be automatically generated : 
+
+Endpoints |  Methods | Purposes
+-- | -- | -- 
+/step/       | GET, POST | List , Creation of Steps
+/step/:id  |  GET, PUT, DELETE | Detail, Update , Delete  of Steps
+/step/:id/ingredients |  GET, POST | List , Creation of Ingredients nested in a Step
+/step/:id/ingredients/:ingredientId |  GET, PUT, DELETE | Detail , Update, Delete of an Ingredient nested in a Step
+/step/:id/ingredients/:ingredientId/nutrients |  GET, POST | List , Creation of nutrients of an ingredient nested in a Step
+/step/:id/ingredients/:ingredientId/nutrients/:nutrientsId |  GET, PUT, DELETE | Detail , Update, Delete of a nutrient nested in an Ingredient nested in a Step
 
 
 
