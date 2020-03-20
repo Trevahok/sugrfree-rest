@@ -53,4 +53,4 @@ app.use('/step', stepRouter )
 app.use((req, res, next) => {
     return res.status(404).send({ error: 'This Route '+req.url+' Not found.' });
 });
-app.listen(8000)
+app.listen(process.env.PORT || 8000)
