@@ -22,7 +22,7 @@
     "nodemon": "^2.0.2"
   },
   "scripts": {
-    "start": "nodemon  app.mjs "
+    "start": "node app.mjs "
   },
   "keywords": [],
   "author": "",
