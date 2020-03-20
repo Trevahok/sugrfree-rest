@@ -9,7 +9,8 @@ SugrFree - Intended to be an AI-based recommendation engine. This repository con
 - Nutrition - Nutrition value of each Ingredient. Can be summed up to find nutrition value of a food. 
 
 Deployed on Google Kuberenetes Engine @ http://35.192.16.163:8000/
-Deployed on Heroku @ sugrfree.herokuapp.com
+
+Deployed on Heroku @ http://sugrfree.herokuapp.com
 
 ### Need for REST API generator
 ---
@@ -71,7 +72,7 @@ app.use('/nutrition', nutritionRouter )
 - custom JWT based auth framework
 - custom Joi to Mongoose Schema conversion
 
-* ToDo: 
+*ToDo:*
 
 - documentationSet - adds documentation to routes 
 - adminSet - adds Toasty forms rendered UI for REST API CRUD updates.
@@ -94,7 +95,32 @@ app.use('/nutrition', nutritionRouter )
 - docker - for containerization
 - kubernetes - for container orchestration
 - GKE - google kubernetes engine for hosted kubernetes client
+- heroku - for deployment
 
+
+### Custom Auth Framework 
+
+- JWT based auth framework.
+- `LoginRequiredMiddleware` -  to protect and endpoint from unauthorized access.
+- `PermissionRequiredMiddleware` - to protect and endpoint from different levels of permissions based on role. 
+- Different names for roles are specified on `constants.mjs` for internationalization. 
+- `login` route takes the following as POST request body and returns a Token object 
+    ```js
+    {
+        "name": "name",
+        "password" : "password",
+    }
+    ```
+- `register` route takes the following as a POST request body and returns UserId 
+    ```js
+    {
+        "name": "name",
+        "password" : "password",
+        "email": "email@gmail.com",
+    }
+    ```
+- `name` has to be unique.
+- `Authorization` header contains the token used for Bearer Authorization.
 
 ### ControllerSet
 ---
@@ -131,6 +157,14 @@ embedDetailController | /model/:id/embedName/:embedId | GET
 embedUpdateController | /model/:id/embedName/:embedId | POST
 embedDeleteController | /model/:id/embedName/:embedId  | DELETE
 
+##### Minutiae 
+
+
+- Each controller is bound with a EmbedDocument whose name is given by `this.key` .
+- Each controller is bound with a Joi Schema object referenced by `this.schema` .
+- The instance for the Controller is provided by `req.instance` . 
+- The mongooseArray object is accessed by `req.instance[this.key]` .
+
 *Example:*
 ---
 For the following nested models , 
@@ -166,12 +200,3 @@ Endpoints |  Methods | Purposes
 /step/:id/ingredients/:ingredientId/nutrients |  GET, POST | List , Creation of nutrients of an ingredient nested in a Step
 /step/:id/ingredients/:ingredientId/nutrients/:nutrientsId |  GET, PUT, DELETE | Detail , Update, Delete of a nutrient nested in an Ingredient nested in a Step
 
-
-
-##### Minutiae 
-
-
-- Each controller is bound with a EmbedDocument whose name is given by `this.key` .
-- Each controller is bound with a Joi Schema object referenced by `this.schema` .
-- The instance for the Controller is provided by `req.instance` . 
-- The mongooseArray object is accessed by `req.instance[this.key]` .
