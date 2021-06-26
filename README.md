@@ -8,10 +8,6 @@ SugrFree - Intended to be an AI-based recommendation engine. This repository con
 - Ingredient - Model to store Ingredient details.
 - Nutrition - Nutrition value of each Ingredient. Can be summed up to find nutrition value of a food. 
 
-Deployed on Google Kuberenetes Engine @ http://35.192.16.163:8000/
-
-Deployed on Heroku @ http://sugrfree.herokuapp.com
-
 ### Need for REST API generator
 ---
 
